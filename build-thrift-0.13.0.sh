@@ -2,7 +2,7 @@
 
 root=$(pwd -P)
 INSTALL_PREFIX=install_dir
-
+export PATH="/usr/local/bin":$PATH
 # NB: The custom bison/flex we set up here works around OSX Yosemite having
 # bison 2.3 which is too old for the thrift 0.13.0 configure script.
 #
@@ -10,12 +10,13 @@ INSTALL_PREFIX=install_dir
 # On ubuntu that's:
 #   sudo apt-get install flex libbison-dev
 if [[ "`uname`" == "Darwin"* ]]; then
-  curl -O http://ftp.gnu.org/gnu/bison/bison-2.5.1.tar.gz && \
-  rm -rf bison-2.5.1 && \
-  tar -xzf bison-2.5.1.tar.gz && (
-    cd bison-2.5.1 && \
+  curl -O http://ftp.gnu.org/gnu/bison/bison-3.4.2.tar.gz && \
+  rm -rf bison-3.4.2 && \
+  tar -xzf bison-3.4.2.tar.gz && (
+    cd bison-3.4.2 && \
     sh ./configure --prefix="$(pwd -P)/$INSTALL_PREFIX" && \
-    make install
+    make install && \
+    export PATH="$(pwd -P)/$INSTALL_PREFIX/bin":$PATH
   )
 
   # Upgraded to 2.6.0 to pick up OSX linker fix: https://sourceforge.net/p/flex/bugs/182/
@@ -28,7 +29,7 @@ if [[ "`uname`" == "Darwin"* ]]; then
     make install
   )
 
-  export PATH="/usr/local/bin/:$(pwd -P)/flex-2.6.0/$INSTALL_PREFIX/bin":$PATH
+  export PATH="$(pwd -P)/flex-2.6.0/$INSTALL_PREFIX/bin":$PATH
   LDFLAGS="-L$(pwd -P)/flex-2.6.0/$INSTALL_PREFIX/lib"
 fi
 
